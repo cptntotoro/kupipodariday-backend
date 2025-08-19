@@ -1,20 +1,9 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Header,
-  HttpCode,
-  Param,
-  Post,
-  Put,
-  Redirect,
-  Req,
-} from '@nestjs/common';
-import { AppService } from './app.service';
+import {Body, Controller, Get, Header, HttpCode, Param, Post, Put, Redirect, Req} from '@nestjs/common';
+import { OffersService } from './offers.service';
 
 @Controller('users')
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class OffersController {
+  constructor(private readonly appService: OffersService) {}
 
   @Get()
   getHello(): string {
@@ -25,8 +14,7 @@ export class AppController {
   create(@Headers() headers): string {
     const contentType = headers['user-agent'];
 
-    return `Создаём нового пользователя. А заголовок user-agent равен "${userAgent}"`;  
-  }
+    return `Создаём нового пользователя. А заголовок user-agent равен "${userAgent}"`;  }
 
   @Put()
   update(@Headers('user-agent') userAgent: string) {
@@ -56,14 +44,14 @@ export class AppController {
 
   @Post()
   create(@Body() body: { [key: string]: unknown }): string {
-    const name = body?.name;
+  const name = body?.name;
 
-    return `Метод создаст пользоватетеля с именем ${name}`;
-  }
+  return `Метод создаст пользоватетеля с именем ${name}`;
+}
 
   @Put(':id')
   update(@Body('name') name: string, @Param('id') id: string) {
-    return `Метод изменит имя на ${name} для пользователя с id ${id}`;
+  return `Метод изменит имя на ${name} для пользователя с id ${id}`;
   }
 
   @Get()
