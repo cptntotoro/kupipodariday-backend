@@ -21,18 +21,13 @@ export class UsersController {
   }
 
   @Patch('me')
-  updateCurrentUser(
-    @Body() updateUserDto: UpdateUserDto,
-  ): UserProfileResponseDto {
-    // Валидировать тело
-
-    const name = updateUserDto?.name;
-    return;
+  updateCurrentUser(@Body() updateUserDto: UpdateUserDto,): UserProfileResponseDto {
+    return this.userService.update(updateUserDto);
   }
 
   @Get('me/wishes')
   getCurrentUserWishes(): string {
-    return this.appService.getHello();
+    return this.userService.getCurrentUserWishes();
   }
 
   @Get(':username')

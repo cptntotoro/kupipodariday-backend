@@ -1,73 +1,47 @@
-import {Body, Controller, Get, Header, HttpCode, Param, Post, Put, Redirect, Req} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { WishlistsService } from './wishlists.service';
+import { CreateWishlistDto } from './dto/create-wishlist.dto';
+import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 
 @Controller('users')
 export class WishlistsController {
-  constructor(private readonly appService: WishlistsService) {}
+  constructor(private readonly wishlistsService: WishlistsService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  findAll(): string {
+    return this.wishlistsService.findAll();
   }
 
   @Post()
-  create(@Headers() headers): string {
-    const contentType = headers['user-agent'];
-
-    return `Создаём нового пользователя. А заголовок user-agent равен "${userAgent}"`;  }
-
-  @Put()
-  update(@Headers('user-agent') userAgent: string) {
-    return `А этот метод API обновит его данные. А заголовок user-agent равен "${userAgent}"`;
+  @HttpCode(201)
+  create(@Body() createWishlistDto: CreateWishlistDto): string {
+    return this.wishlistsService.create(createWishlistDto);
   }
 
-  // Вот ещё некоторые доступные параметры:
-  // @Res() — объект ответа (тип Response из Express);
-  // @Param(name?: string) — параметр URL;
-  // @Query(key?: string) — GET-параметры запроса;
-  // @Body(key?: string) — тело запроса.
-
-  @Get(':id') // роут будет обрабатывать запросы вида GET /users/123
-  find(@Param('id') id: string): string {
-    return `Этот метод вернёт данные пользователя с id ${id}`;
+  @Get(':id')
+  getById(@Param('id') id: number): string {
+    return this.wishlistsService.getById(id);
   }
 
-  @Get('byId/*') // роут будет обрабатывать запросы вида GET /users/byId/any-string
-  findById(): string {
-    return 'Метод вернёт пользователя по переданному в url id';
+  @Patch(':id')
+  update(
+    @Param('id') id: number,
+    @Body() updateWishlistDto: UpdateWishlistDto,
+  ): string {
+    return this.wishlistsService.update(id, updateWishlistDto);
   }
 
-  @Get('*') // роут будет обрабатывать запросы вида GET /users/any-string
-  find(): string {
-    return 'Этот метод обработает любые запросы к /users/*';
-  }
-
-  @Post()
-  create(@Body() body: { [key: string]: unknown }): string {
-  const name = body?.name;
-
-  return `Метод создаст пользоватетеля с именем ${name}`;
-}
-
-  @Put(':id')
-  update(@Body('name') name: string, @Param('id') id: string) {
-  return `Метод изменит имя на ${name} для пользователя с id ${id}`;
-  }
-
-  @Get()
-  @HttpCode(204) // 204 — No Content
-  @Header('Content-Type', 'text/plain')
-  @Redirect('/cards', 301)
-  findAll(): string {
-    return 'Пользователей нет  :(';
-  }
-
-  @Get()
-  @Redirect()
-  findAll(): string {
-    return {
-      url: '/cards',
-      statusCode: 301,
-    };
+  @Delete(':id')
+  delete(@Param('id') id: number): string {
+    return this.wishlistsService.delete(id);
   }
 }
