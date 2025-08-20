@@ -1,3 +1,11 @@
+import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
+
 export class FindUsersDto {
-    query: string; // username или email
+  /**
+   * username или email
+   */
+  @IsString()
+  @IsNotEmpty()
+  @IsDefined()
+  query: string;
 }

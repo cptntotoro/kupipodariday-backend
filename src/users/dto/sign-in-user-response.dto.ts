@@ -1,3 +1,6 @@
 export class SignInUserResponseDto {
-    access_token: string;
+  /**
+   * JWT-токен
+   */
+  access_token: string;
 }

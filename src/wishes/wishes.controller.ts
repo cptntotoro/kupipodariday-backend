@@ -1,73 +1,60 @@
-import {Body, Controller, Get, Header, HttpCode, Param, Post, Put, Redirect, Req} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { WishesService } from './wishes.service';
+import { CreateWishDto } from './dto/create-wish.dto';
+import { UpdateWishDto } from './dto/update-wish.dto';
 
-@Controller('users')
+@Controller('wishes')
 export class WishesController {
-  constructor(private readonly appService: WishesService) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+  constructor(private readonly wishesService: WishesService) {}
 
   @Post()
-  create(@Headers() headers): string {
-    const contentType = headers['user-agent'];
-
-    return `Создаём нового пользователя. А заголовок user-agent равен "${userAgent}"`;  }
-
-  @Put()
-  update(@Headers('user-agent') userAgent: string) {
-    return `А этот метод API обновит его данные. А заголовок user-agent равен "${userAgent}"`;
+  @HttpCode(201)
+  create(@Body() createWishDto: CreateWishDto): void {
+    return this.wishesService.create(createWishDto);
   }
 
-  // Вот ещё некоторые доступные параметры:
-  // @Res() — объект ответа (тип Response из Express);
-  // @Param(name?: string) — параметр URL;
-  // @Query(key?: string) — GET-параметры запроса;
-  // @Body(key?: string) — тело запроса.
-
-  @Get(':id') // роут будет обрабатывать запросы вида GET /users/123
-  find(@Param('id') id: string): string {
-    return `Этот метод вернёт данные пользователя с id ${id}`;
+  @Get('last')
+  getLast(): string {
+    return this.wishesService.getLast();
   }
 
-  @Get('byId/*') // роут будет обрабатывать запросы вида GET /users/byId/any-string
-  findById(): string {
-    return 'Метод вернёт пользователя по переданному в url id';
+  @Get('top')
+  getTop(): string {
+    return this.wishesService.getTop();
   }
 
-  @Get('*') // роут будет обрабатывать запросы вида GET /users/any-string
-  find(): string {
-    return 'Этот метод обработает любые запросы к /users/*';
+  @Get(':id')
+  getById(@Param('id') id: number): string {
+    return this.wishesService.getById(id);
   }
 
-  @Post()
-  create(@Body() body: { [key: string]: unknown }): string {
-  const name = body?.name;
-
-  return `Метод создаст пользоватетеля с именем ${name}`;
-}
-
-  @Put(':id')
-  update(@Body('name') name: string, @Param('id') id: string) {
-  return `Метод изменит имя на ${name} для пользователя с id ${id}`;
+  // TODO: нет в сваггере. Мб вернуть объект???
+  @Patch(':id')
+  updateById(
+    @Param('id') id: number,
+    @Body() updateWishDto: UpdateWishDto,
+    // @Res() wish: Wish,
+  ): string {
+    return this.wishesService.update(id, updateWishDto);
   }
 
-  @Get()
-  @HttpCode(204) // 204 — No Content
-  @Header('Content-Type', 'text/plain')
-  @Redirect('/cards', 301)
-  findAll(): string {
-    return 'Пользователей нет  :(';
+  @Delete(':id')
+  deleteById(@Param('id') id: number): string {
+    return this.wishesService.deleteById(id);
   }
 
-  @Get()
-  @Redirect()
-  findAll(): string {
-    return {
-      url: '/cards',
-      statusCode: 301,
-    };
+  @Post(':id/copy')
+  @HttpCode(201)
+  duplicate(@Param('id') id: number): string {
+    return this.wishesService.duplicate(id);
   }
 }
