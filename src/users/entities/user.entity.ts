@@ -22,6 +22,7 @@ export class User {
   /**
    * Имя пользователя
    */
+  // TODO: В задаче не как в сваггере: 2-30 символов
   @IsString()
   @MinLength(1)
   @MaxLength(64)
@@ -30,6 +31,8 @@ export class User {
   /**
    * Описание профиля
    */
+  // TODO: В задаче не как в сваггере: 2-200 символов
+  //  По умоллчанию: "Пока ничего не рассказал о себе"
   @MinLength(1)
   @MaxLength(200)
   about: string;
@@ -37,6 +40,7 @@ export class User {
   /**
    * Ссылка на аватар профиля
    */
+  // TODO: По умоллчанию: https://i.pravatar.cc/300
   @IsUrl()
   avatar: string;
 
@@ -58,9 +62,18 @@ export class User {
   @IsDateString()
   updatedAt: string; // format: date-time
 
+  /**
+   * Список желаемых подарков
+   */
   wishes: Wish[];
 
+  /**
+   * Список подарков, на которые скидывается пользователь
+   */
   offers: Offer[];
 
+  /**
+   * Списки желаемого, которые создал пользователь
+   */
   wishlists: Wishlist[];
 }

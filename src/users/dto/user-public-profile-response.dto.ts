@@ -6,6 +6,9 @@ import {
   MinLength,
 } from 'class-validator';
 
+/**
+ * DTO публичного профиля {@link User}
+ */
 export class UserPublicProfileResponseDto {
   id: number;
 
