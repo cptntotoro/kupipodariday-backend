@@ -16,8 +16,8 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Get('me')
-  getCurrentUser(): UserProfileResponseDto {
-    return this.userService.getCurrentUser();
+  getCurrentUser(): Promise<UserProfileResponseDto> {
+    return this.userService.getById(1);
   }
 
   @Patch('me')

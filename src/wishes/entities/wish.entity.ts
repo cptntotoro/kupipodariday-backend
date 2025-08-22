@@ -1,86 +1,107 @@
-import {
-  IsDateString,
-  IsPositive,
-  IsUrl,
-  MaxLength,
-  Min,
-  MinLength,
-} from 'class-validator';
 import { Offer } from '../../offers/entities/offer.entity';
-import { UserPublicProfileResponseDto } from '../../users/dto/user-public-profile-response.dto';
+import { Column, ManyToOne, OneToMany } from 'typeorm';
+import { WishPartial } from './wishPartial.entity';
+import { User } from '../../users/entities/user.entity';
 
 /**
  * Полный класс подарка
  */
-export class Wish {
-  /**
-   * Идентификатор
-   */
-  id: number;
+export class Wish extends WishPartial {
+  // /**
+  //  * Идентификатор
+  //  */
+  // @PrimaryGeneratedColumn()
+  // id: number;
+  //
+  // /**
+  //  * Название
+  //  */
+  // // @MinLength(1)
+  // // @MaxLength(250)
+  // @Column({
+  //   length: 250,
+  //   nullable: false,
+  // })
+  // name: string;
+  //
+  // /**
+  //  * Описание
+  //  */
+  // // @MinLength(1)
+  // // @MaxLength(1024)
+  // @Column({
+  //   length: 1024,
+  // })
+  // description: string;
 
-  /**
-   * Название
-   */
-  @MinLength(1)
-  @MaxLength(250)
-  name: string;
+  // /**
+  //  * Ссылка на магазин
+  //  */
+  // // @IsUrl()
+  // @Column({
+  //   nullable: false,
+  // })
+  // link: string;
+  //
+  // /**
+  //  * Ссылка на изображение
+  //  */
+  // @IsUrl()
+  // @Column({
+  //   nullable: false,
+  // })
+  // image: string;
 
-  /**
-   * Описание
-   */
-  @MinLength(1)
-  @MaxLength(1024)
-  description: string;
-
-  /**
-   * Ссылка на магазин
-   */
-  @IsUrl()
-  link: string;
-
-  /**
-   * Ссылка на изображение
-   */
-  @IsUrl()
-  image: string;
-
-  /**
-   * Стоимость с округлением до сотых
-   */
-  @Min(1)
-  price: number;
-
-  /**
-   * Текущая сумма собранных средств с округлением до сотых
-   */
-  @Min(1)
-  raised: number;
-
-  /**
-   * Сколько раз скопировали другие
-   */
-  @IsPositive()
-  copied: number;
+  // /**
+  //  * Стоимость с округлением до сотых
+  //  */
+  // @Min(1)
+  // @Column({
+  //   precision: 2,
+  // })
+  // price: number;
+  //
+  // /**
+  //  * Текущая сумма собранных средств с округлением до сотых
+  //  */
+  // @Min(1)
+  // @Column({
+  //   precision: 2,
+  // })
+  // raised: number;
+  //
+  // /**
+  //  * Сколько раз скопировали другие
+  //  */
+  // @IsPositive()
+  // copied: number;
 
   /**
    * Ссылка на пользователя, который добавил пожелание подарка
    */
-  owner: UserPublicProfileResponseDto;
+  @ManyToOne(() => User, (user) => user.wishes)
+  owner: User;
 
   /**
    * Предложения скинуться на подарок от других пользователей
    */
+  @Column({
+    array: true,
+  })
+  @OneToMany(() => Offer, (offer) => offer.item)
   offers: Offer[];
 
-  /**
-   * Дата и время создания
-   */
-  @IsDateString()
-  createdAt: string; // format: date-time
-
-  /**
-   * Дата и время обновления
-   */
-  @IsDateString()
-  updatedAt: string; // format: date-time
+  // /**
+  //  * Дата и время создания
+  //  */
+  // // @IsDateString()
+  // @CreateDateColumn()
+  // createdAt: string; // format: date-time
+  //
+  // /**
+  //  * Дата и время обновления
+  //  */
+  // // @IsDateString()
+  // @UpdateDateColumn()
+  // updatedAt: string; // format: date-time
 }

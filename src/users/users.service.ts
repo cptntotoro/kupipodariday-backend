@@ -4,6 +4,9 @@ import { ApplicationConfig } from '@nestjs/core';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Wish } from '../wishes/entities/wish.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +16,13 @@ export class UsersService {
   // или параметр конструктора
   // constructor(@Inject('CONFIG') config: ApplicationConfig) {}
 
-  constructor(private readonly usersRepository: UsersRepository) {}
+  // constructor(
+  //   @InjectRepository(User)
+  //   private studentRepository: Repository<User>,
+  // ) {}
+
+  constructor(private readonly usersRepository: UsersRepository) {
+  }
 
   getCurrentUser(): UserProfileResponseDto {
     return new UserProfileResponseDto();
@@ -23,9 +32,8 @@ export class UsersService {
    * Получить пользователя по идентификатору
    * @param id Идентификатор
    */
-  async get(id: string) {
-    const user = await this.usersRepository.getById(id);
-    return user;
+  async getById(id: number): Promise<User> {
+    return await this.usersRepository.getById(id);
   }
 
   /**

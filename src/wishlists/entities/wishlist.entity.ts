@@ -1,53 +1,86 @@
-import { IsDateString, IsUrl, MaxLength, MinLength } from 'class-validator';
-import { WishPartial } from '../../wishes/entities/wishPartial.entity';
-import { UserPublicProfileResponseDto } from '../../users/dto/user-public-profile-response.dto';
+import {
+  IsDateString,
+  IsNumber,
+  IsString,
+  IsUrl,
+  Length,
+} from 'class-validator';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { IsOptional } from 'class-validator/types/decorator/common/IsOptional';
+import { User } from '../../users/entities/user.entity';
+import { Wish } from '../../wishes/entities/wish.entity';
 
 /**
  * Список желаемого
  */
+@Entity('wishlists')
 export class Wishlist {
   /**
    * Идентификатор
    */
+  @IsNumber()
+  @PrimaryGeneratedColumn()
   id: number;
 
   /**
    * Название
    */
-  @MinLength(1)
-  @MaxLength(250)
+  @IsString()
+  @Length(1, 250)
+  @Column({
+    length: 250,
+  })
   name: string;
 
   // TODO: Этого не было в сваггере
-  @MinLength(1)
-  @MaxLength(1500)
+  @IsString()
+  @Length(1, 1500)
+  @IsOptional()
+  @Column({
+    nullable: true,
+    length: 1500,
+  })
   description: string;
 
   /**
    * Ссылка на картинку
    */
   @IsUrl()
+  @IsOptional()
+  @Column({
+    nullable: true,
+  })
   image: string;
 
   /**
-   * DTO публичного профиля {@link User}
+   * Пользователь
    */
-  owner: UserPublicProfileResponseDto;
+  @ManyToOne(() => User, (user) => user.wishlists)
+  owner: User;
 
   /**
    * Подарки
    */
-  items: WishPartial[];
+  @ManyToMany(() => Wish)
+  @JoinTable()
+  items: Wish[];
 
   /**
    * Дата и время создания
    */
   @IsDateString()
-  createdAt: string; // format: date-time
+  createdAt: Date; // format: date-time
 
   /**
    * Дата и время обновления
    */
   @IsDateString()
-  updatedAt: string; // format: date-time
+  updatedAt: Date; // format: date-time
 }

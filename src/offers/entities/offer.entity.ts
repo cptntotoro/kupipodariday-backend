@@ -1,6 +1,13 @@
 import { Wish } from '../../wishes/entities/wish.entity';
 import { User } from '../../users/entities/user.entity';
-import { IsDateString } from 'class-validator';
+import { IsBoolean, IsDecimal, IsNumber } from 'class-validator';
+import {
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 /**
  * Предложение скинуться на подарок
@@ -9,38 +16,55 @@ export class Offer {
   /**
    * Идентификатор
    */
+  @IsNumber()
+  @PrimaryGeneratedColumn()
   id: number;
 
   /**
    * Подарок
    */
+  @ManyToOne(() => Wish, (wish) => wish.offers)
   item: Wish;
 
   /**
    * Сумма заявки, округляется до сотых
    */
+  @IsDecimal()
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+  })
   amount: number;
 
   /**
    * Флаг отображения информации о скидывающемся в списке
    */
-    // TODO: по умолчанию - false
+  @IsBoolean()
+  @Column({
+    nullable: false,
+    default: false,
+  })
   hidden: boolean;
 
   /**
    * Пользователь
    */
+  @ManyToOne(() => User, (user) => user.offers)
   user: User;
 
   /**
    * Дата и время создания
    */
-  @IsDateString()
-  createdAt: string; // format: date-time
+  // @IsDateString()
+  @CreateDateColumn()
+  createdAt: Date; // format: date-time
 
   /**
    * Дата и время обновления
    */
-  @IsDateString()
-  updatedAt: string; // format: date-time
+  // @IsDateString()
+  @UpdateDateColumn()
+  updatedAt: Date; // format: date-time
 }
